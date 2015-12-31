@@ -27,6 +27,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.safari.SafariDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +53,7 @@ public class SeleniumProducer extends DefaultProducer {
 
     public void process(Exchange exchange) throws Exception {
         SeleniumTest seleniumTest = exchange.getIn().getBody(SeleniumTest.class);
-        Driver driver = Optional.ofNullable(exchange.getIn().getHeader(SeleniumConstants.DRIVER)).isPresent() ? Driver.valueOf(exchange.getIn().getHeader(SeleniumConstants.DRIVER).toString()) : Driver.FIREFOX_DRIVER;
+        Driver driver = Optional.ofNullable(exchange.getIn().getHeader(SeleniumConstants.DRIVER)).isPresent() ? Driver.valueOf(exchange.getIn().getHeader(SeleniumConstants.DRIVER).toString()) : Driver.HTMLUNIT_DRIVER;
         executeActions(driver, seleniumTest);
         exchange.getOut().setBody(seleniumTest);
     }
@@ -67,8 +68,11 @@ public class SeleniumProducer extends DefaultProducer {
                 webDriver = new SafariDriver();
                 break;
             case FIREFOX_DRIVER:
-            default:
                 webDriver = new FirefoxDriver();
+                break;
+            case HTMLUNIT_DRIVER:
+            default:
+                webDriver = new HtmlUnitDriver();
                 break;
         }
         webDriver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);

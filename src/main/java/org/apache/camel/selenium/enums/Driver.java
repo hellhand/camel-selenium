@@ -7,5 +7,6 @@ public enum Driver {
 
     FIREFOX_DRIVER,
     CHROME_DRIVER,
-    SAFARI_DRIVER;
+    SAFARI_DRIVER,
+    HTMLUNIT_DRIVER
 }

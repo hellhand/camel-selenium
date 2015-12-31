@@ -41,7 +41,7 @@ public class SeleniumComponentTest extends CamelTestSupport {
         return new RouteBuilder() {
             public void configure() {
                 from("file://src/test/resources?noop=true")
-                        .setHeader(SeleniumConstants.DRIVER, simple(Driver.SAFARI_DRIVER.name()))
+                        .setHeader(SeleniumConstants.DRIVER, simple(Driver.FIREFOX_DRIVER.name()))
                         .to("selenium://bar")
                         .to("mock:result");
             }
