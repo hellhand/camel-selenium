@@ -21,6 +21,7 @@ import org.apache.camel.impl.DefaultProducer;
 import org.apache.camel.selenium.beans.SeleniumAction;
 import org.apache.camel.selenium.beans.SeleniumTest;
 import org.apache.camel.selenium.constants.SeleniumConstants;
+import org.apache.camel.selenium.driver.BlankDriver;
 import org.apache.camel.selenium.enums.Driver;
 import org.apache.camel.selenium.exceptions.SeleniumTestFailedException;
 import org.openqa.selenium.By;
@@ -34,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -53,7 +55,7 @@ public class SeleniumProducer extends DefaultProducer {
 
     public void process(Exchange exchange) throws Exception {
         SeleniumTest seleniumTest = exchange.getIn().getBody(SeleniumTest.class);
-        Driver driver = Optional.ofNullable(exchange.getIn().getHeader(SeleniumConstants.DRIVER)).isPresent() ? Driver.valueOf(exchange.getIn().getHeader(SeleniumConstants.DRIVER).toString()) : Driver.HTMLUNIT_DRIVER;
+        Driver driver = Optional.ofNullable(exchange.getIn().getHeader(SeleniumConstants.DRIVER)).isPresent() ? Driver.valueOf(exchange.getIn().getHeader(SeleniumConstants.DRIVER).toString()) : Driver.BLANK_DRIVER;
         executeActions(driver, seleniumTest);
         exchange.getOut().setBody(seleniumTest);
     }
@@ -70,9 +72,12 @@ public class SeleniumProducer extends DefaultProducer {
             case FIREFOX_DRIVER:
                 webDriver = new FirefoxDriver();
                 break;
-            case HTMLUNIT_DRIVER:
-            default:
+            case HTML_UNIT_DRIVER:
                 webDriver = new HtmlUnitDriver();
+                break;
+            case BLANK_DRIVER:
+            default:
+                webDriver = new BlankDriver();
                 break;
         }
         webDriver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
@@ -97,40 +102,47 @@ public class SeleniumProducer extends DefaultProducer {
 
     @SuppressWarnings("unused")
     private void open(final WebDriver webDriver, final SeleniumTest seleniumTest, final SeleniumAction seleniumAction) {
+        LOG.debug("open : Driver : {} - URL : {} - Action {}/{}/{}", Arrays.asList(webDriver, seleniumTest.getUrl(), seleniumAction.getAction(), seleniumAction.getTarget(), seleniumAction.getValue()).toArray());
         webDriver.get(seleniumTest.getUrl() + seleniumAction.getTarget());
     }
 
     @SuppressWarnings("unused")
     private void type(final WebDriver webDriver, final SeleniumTest seleniumTest, final SeleniumAction seleniumAction) {
+        LOG.debug("type : Driver : {} - URL : {} - Action {}/{}/{}", Arrays.asList(webDriver, seleniumTest.getUrl(), seleniumAction.getAction(), seleniumAction.getTarget(), seleniumAction.getValue()).toArray());
         webDriver.findElement(getBy(seleniumAction.getTarget())).sendKeys(seleniumAction.getValue());
     }
 
     @SuppressWarnings("unused")
     private void click(final WebDriver webDriver, final SeleniumTest seleniumTest, final SeleniumAction seleniumAction) {
+        LOG.debug("click : Driver : {} - URL : {} - Action {}/{}/{}", Arrays.asList(webDriver, seleniumTest.getUrl(), seleniumAction.getAction(), seleniumAction.getTarget(), seleniumAction.getValue()).toArray());
         webDriver.findElement(getBy(seleniumAction.getTarget())).click();
     }
 
     @SuppressWarnings("unused")
     private void clickAndWait(final WebDriver webDriver, final SeleniumTest seleniumTest, final SeleniumAction seleniumAction) throws InterruptedException {
+        LOG.debug("clickAndWait : Driver : {} - URL : {} - Action {}/{}/{}", Arrays.asList(webDriver, seleniumTest.getUrl(), seleniumAction.getAction(), seleniumAction.getTarget(), seleniumAction.getValue()).toArray());
         webDriver.findElement(getBy(seleniumAction.getTarget())).click();
         Thread.sleep(2000);
     }
 
     @SuppressWarnings("unused")
     private void waitForElementPresent(final WebDriver webDriver, final SeleniumTest seleniumTest, final SeleniumAction seleniumAction) throws TimeoutException, InterruptedException {
-        for (int second = 0;; second++) {
+        LOG.debug("waitForElementPresent : Driver : {} - URL : {} - Action {}/{}/{}", Arrays.asList(webDriver, seleniumTest.getUrl(), seleniumAction.getAction(), seleniumAction.getTarget(), seleniumAction.getValue()).toArray());
+        for (int second = 0; ; second++) {
             if (second >= 60) throw new TimeoutException();
             try {
                 webDriver.findElement(getBy(seleniumAction.getTarget()));
                 return;
             }
-            catch (Exception e) {}
+            catch (Exception e) {
+            }
             Thread.sleep(1000);
         }
     }
 
     @SuppressWarnings("unused")
     private void assertText(final WebDriver webDriver, final SeleniumTest seleniumTest, final SeleniumAction seleniumAction) throws InterruptedException {
+        LOG.debug("assertText : Driver : {} - URL : {} - Action {}/{}/{}", Arrays.asList(webDriver, seleniumTest.getUrl(), seleniumAction.getAction(), seleniumAction.getTarget(), seleniumAction.getValue()).toArray());
         webDriver.findElement(getBy(seleniumAction.getTarget()));
     }
 

@@ -5,5 +5,5 @@ package org.apache.camel.selenium.constants;
  */
 public class SeleniumConstants {
 
-    public static final String DRIVER = "driver";
+    public static final String DRIVER = "SeleniumDriver";
 }

@@ -18,16 +18,12 @@ package org.apache.camel;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
-import org.apache.camel.impl.DefaultExchange;
-import org.apache.camel.impl.DefaultProducerTemplate;
 import org.apache.camel.selenium.constants.SeleniumConstants;
 import org.apache.camel.selenium.enums.Driver;
 import org.apache.camel.test.junit4.CamelTestSupport;
-import org.junit.Before;
 import org.junit.Test;
 
 public class SeleniumComponentTest extends CamelTestSupport {
-
 
     @Test
     public void testHelloWorld() throws Exception {
@@ -40,8 +36,8 @@ public class SeleniumComponentTest extends CamelTestSupport {
     protected RouteBuilder createRouteBuilder() throws Exception {
         return new RouteBuilder() {
             public void configure() {
-                from("file://src/test/resources?noop=true")
-                        .setHeader(SeleniumConstants.DRIVER, simple(Driver.FIREFOX_DRIVER.name()))
+                from("file://src/test/resources/templates?noop=true&include=.*.xml")
+                        .setHeader(SeleniumConstants.DRIVER, simple(Driver.BLANK_DRIVER.name()))
                         .to("selenium://bar")
                         .to("mock:result");
             }

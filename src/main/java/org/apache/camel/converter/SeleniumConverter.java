@@ -1,7 +1,6 @@
 package org.apache.camel.converter;
 
 import org.apache.camel.Converter;
-import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.selenium.beans.SeleniumAction;
 import org.apache.camel.selenium.beans.SeleniumTest;
