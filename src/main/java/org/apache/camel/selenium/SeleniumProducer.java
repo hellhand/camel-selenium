@@ -92,6 +92,7 @@ public class SeleniumProducer extends DefaultProducer {
                 }
                 catch (Exception e) {
                     webDriver.close();
+                    webDriver.quit();
                     throw new SeleniumTestFailedException(e, seleniumTest, seleniumAction);
                 }
             }
@@ -154,27 +155,6 @@ public class SeleniumProducer extends DefaultProducer {
                 Collections.addAll(clazz, target.split("="));
             }
         });
-//        try {
-//            Class by = Class.forName("org.openqa.selenium.By.By" + Character.toUpperCase(clazz.get(0).charAt(0)) + clazz.get(0).substring(1));
-//            return (By) by.getConstructor(String.class).newInstance(clazz.get(1));
-//        }
-//        catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        catch (NoSuchMethodException e) {
-//            e.printStackTrace();
-//        }
-//        catch (InstantiationException e) {
-//            e.printStackTrace();
-//        }
-//        catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//        }
-//        catch (InvocationTargetException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-
         if ("id".equals(clazz.get(0))) {
             return By.id(clazz.get(1));
         }
